@@ -41,7 +41,7 @@ export const generarReportePDF = async (req, res) => {
         if (arraRta.length > 0) {
             const pdf = new jsPDF();
             let y = 10;
-            pdf.addImage(logoImageData, 'JPEG', 10, 10, 40, 40);
+            pdf.addImage(logoImageData, 'JPG', 10, 10, 40, 40);
             pdf.text("REPORTE PERSONAS CREADOS", 10, y);
             y += 30;
 
