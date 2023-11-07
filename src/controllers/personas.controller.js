@@ -30,10 +30,7 @@ export const consultarPersonas = async (req, res) => {
 export const generarReportePDF = async (req, res) => {
     try {
         console.log("Generando PDF...");
-        const logoFilePath = '../../OIG.jpg';
 
-        // Cargar el logotipo desde el servidor
-        const logoImageData = fs.readFileSync(logoFilePath);
         const sql = 'SELECT * FROM personasid';
         const rtaSql = await pool.query(sql, []);
         const arraRta = rtaSql[0];
@@ -41,7 +38,7 @@ export const generarReportePDF = async (req, res) => {
         if (arraRta.length > 0) {
             const pdf = new jsPDF();
             let y = 10;
-            pdf.addImage(logoImageData, 'jpg', 10, 10, 40, 40);
+
             pdf.text("REPORTE PERSONAS CREADOS", 10, y);
             y += 30;
 
