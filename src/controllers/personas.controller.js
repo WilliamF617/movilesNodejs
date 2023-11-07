@@ -30,7 +30,7 @@ export const consultarPersonas = async (req, res) => {
 export const generarReportePDF = async (req, res) => {
     try {
         console.log("Generando PDF...");
-        const logoFilePath = '../OIG.jpg';
+        const logoFilePath = '../../OIG.jpg';
 
         // Cargar el logotipo desde el servidor
         const logoImageData = fs.readFileSync(logoFilePath);
