@@ -104,7 +104,7 @@ export const crearPersona = async (req, res) => {
 
         //console.log(`Se recibio el producto de id ${id}, nombre: ${nombre} de marca ${marca}, con precio: ${precio}`)
 
-        let sql = 'INSERT INTO `DB_NAME`.`personasid` (`nombre`, `edad`, `titulo`) VALUES (?,?,?);'
+        let sql = 'INSERT INTO ${DB_NAME}.`personasid` (`nombre`, `edad`, `titulo`) VALUES (?,?,?);'
         let datos = [nombre, edad, titulo];
 
         let rta = await pool.query(sql, datos)
@@ -147,7 +147,7 @@ export const actulizarPersona = async (req, res) => {
         let titulo = req.body.titulo;
 
 
-        let sql = 'UPDATE `DB_NAME`.`personasid` SET `nombre` = ?, `edad` = ?, `titulo` = ? WHERE `id` = ?';
+        let sql = 'UPDATE ${DB_NAME}.`personasid` SET `nombre` = ?, `edad` = ?, `titulo` = ? WHERE `id` = ?';
         let datos = [nombre, edad, titulo, id];
 
         let rta = await pool.query(sql, datos)
