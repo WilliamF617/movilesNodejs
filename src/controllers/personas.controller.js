@@ -26,6 +26,52 @@ export const consultarPersonas = async (req, res) => {
 }
 
 
+/*
+export const generarReportePDF = async (req, res) => {
+    try {
+        console.log("Generando PDF...");
+
+        const sql = 'SELECT * FROM personasid';
+        const rtaSql = await pool.query(sql, []);
+        const arraRta = rtaSql[0];
+
+        if (arraRta.length > 0) {
+            const pdf = new jsPDF();
+            let y = 10;
+
+            pdf.text("REPORTE PERSONAS CREADOS", 10, y);
+            y += 30;
+
+            arraRta.forEach(p => {
+                pdf.text(`Nombre: ${p.nombre}, Edad: ${p.edad}, Título: ${p.titulo}`, 10, y);
+                y += 10;
+            });
+
+            // Nombre del archivo PDF
+            const pdfFileName = 'REPORTEPERSONAS.pdf';
+
+            // Ruta completa al archivo PDF en la carpeta "public"
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+            const pdfFilePath = path.join(__dirname, '../public', pdfFileName);
+
+            // Guarda el PDF en la carpeta "public"
+            pdf.save(pdfFilePath);
+
+            // Configura el tipo de contenido como PDF
+            res.contentType('application/pdf');
+
+            // Envía el archivo PDF como respuesta
+            res.sendFile(pdfFileName, { root: path.join(__dirname, '..', 'public') });
+        } else {
+            res.status(204).json();
+        }
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: `Error del servidor, ${e}` });
+    }
+};*/
+
 
 export const generarReportePDF = async (req, res) => {
     try {
@@ -38,6 +84,10 @@ export const generarReportePDF = async (req, res) => {
         if (arraRta.length > 0) {
             const pdf = new jsPDF();
             let y = 10;
+
+            // Agregar el logotipo al PDF desde la raíz del servidor
+            const logoData = fs.readFileSync('../../OIG.jpg'); // Ruta a tu logotipo
+            pdf.addImage(logoData, 'JPEG', 10, 10, 40, 40); // Ajusta las coordenadas y dimensiones
 
             pdf.text("REPORTE PERSONAS CREADOS", 10, y);
             y += 30;
