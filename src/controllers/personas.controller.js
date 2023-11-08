@@ -77,6 +77,12 @@ export const generarReportePDF = async (req, res) => {
     try {
         console.log("Generando PDF...");
 
+        // Agregar el logotipo al PDF (ajusta las coordenadas y dimensiones)
+        const logoData = fs.readFileSync('../../OIG.jpg'); // Ruta al logotipo
+        const logoImage = new Image(logoData);
+        const logoWidth = 40; // Ancho del logotipo
+        const logoHeight = 40; // Alto del logotipo
+
         const sql = 'SELECT * FROM personasid';
         const rtaSql = await pool.query(sql, []);
         const arraRta = rtaSql[0];
@@ -85,9 +91,8 @@ export const generarReportePDF = async (req, res) => {
             const pdf = new jsPDF();
             let y = 10;
 
-            // Agregar el logotipo al PDF desde la raíz del servidor
-            const logoData = fs.readFileSync('../../OIG.jpg'); // Ruta a tu logotipo
-            pdf.addImage(logoData, 'JPEG', 10, 10, 40, 40); // Ajusta las coordenadas y dimensiones
+            // Agregar el logotipo al PDF
+            pdf.addImage(logoImage, 10, 10, logoWidth, logoHeight);
 
             pdf.text("REPORTE PERSONAS CREADOS", 10, y);
             y += 30;
@@ -121,6 +126,8 @@ export const generarReportePDF = async (req, res) => {
         return res.status(500).json({ message: `Error del servidor, ${e}` });
     }
 };
+
+
 
 
 
