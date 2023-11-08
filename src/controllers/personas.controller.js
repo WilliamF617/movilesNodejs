@@ -73,8 +73,6 @@ export const generarReportePDF = async (req, res) => {
 };*/
 
 
-import jsPDF from 'jspdf';
-import fs from 'fs/promises';
 
 export const generarReportePDF = async (req, res) => {
     try {
