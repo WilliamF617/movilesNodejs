@@ -79,7 +79,7 @@ export const generarReportePDF = async (req, res) => {
         console.log("Generando PDF...");
 
         // Cargar el logotipo desde el servidor
-        const logoData = await fs.readFile('../OIG.jpg'); // Ruta al logotipo
+        const logoData = await fs.readFile('../../OIG.jpg'); // Ruta al logotipo
         const logoImage = new Image(logoData);
         const logoWidth = 40; // Ancho del logotipo
         const logoHeight = 40; // Alto del logotipo
