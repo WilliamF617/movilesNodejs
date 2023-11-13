@@ -6,7 +6,7 @@ import { jsPDF } from 'jspdf';
 import fs from "fs/promises";
 import { fileURLToPath } from 'url';
 import path from "path";
-
+import { dirname, resolve, join } from 'path';
 export const consultarPersonas = async (req, res) => {
 
     try {
@@ -73,12 +73,16 @@ export const generarReportePDF = async (req, res) => {
     }
 }
 */
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const baseDir = path.resolve(__dirname, '..');
+
+
 
 export const generarReportePDF = async (req, res) => {
     try {
         console.log("Generando PDF...");
+        //declaracion para manejo de los archivos como url
+
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
+        const baseDir = path.resolve(__dirname, '..');
 
         const sql = 'SELECT * FROM personasid';
         const rtaSql = await pool.query(sql, []);
@@ -89,17 +93,18 @@ export const generarReportePDF = async (req, res) => {
             let y = 10;
 
             // Ruta de la imagen JPEG
-            const imagePath = path.join(baseDir, './data', 'imag.jpeg');
+            const imagePath = path.join(baseDir, './data', 'inst.png');
 
             // Leer la imagen como un Buffer
             const imageBuffer = await fs.readFile(imagePath);
 
             // Agregar imagen al PDF
-            pdf.addImage(imageBuffer, 'JPEG', 10, y, 50, 50); // ajusta las coordenadas y dimensiones según tu diseño
+            pdf.addImage(imageBuffer, 'PNG', 10, y, 25, 25); // ajusta las coordenadas y dimensiones  diseño
 
-            y += 70; // Ajusta la posición en Y después de la imagen
+            // Texto al lado de la imagen
+            pdf.text("REPORTE PERSONAS CREADOS", 50, y);
 
-            pdf.text("REPORTE PERSONAS CREADOS", 10, y);
+            // Ajustar la posición en Y después del texto
             y += 30;
 
             arraRta.forEach(p => {
@@ -112,7 +117,7 @@ export const generarReportePDF = async (req, res) => {
 
             // Ruta completa al archivo PDF en la carpeta "public"
             const pdfFilePath = path.join(baseDir, './public', pdfFileName);
-            console.log("Ruta completa del archivo PDF:", pdfFilePath);
+
 
 
             // Guardar el PDF en la carpeta "public"
@@ -131,6 +136,25 @@ export const generarReportePDF = async (req, res) => {
         return res.status(500).json({ message: `Error del servidor, ${e}` });
     }
 };
+
+export const imagenServidor = async (req, res) => {
+    try {
+        const filename = fileURLToPath(import.meta.url);
+        const directory = dirname(filename);
+        const baseDir = resolve(directory, '..');
+
+        // Ruta de la imagen JPEG
+        const imagePath = join(baseDir, 'data', 'imag.jpeg');
+
+        // Devuelve la imagen como respuesta
+        res.sendFile(imagePath);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: `Error del servidor, ${e}` });
+    }
+};
+
+
 
 
 
