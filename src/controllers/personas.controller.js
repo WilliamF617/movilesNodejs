@@ -1,10 +1,11 @@
 import { pool } from '../db.js';
-import { jsPDF } from 'jspdf';
 import { DB_NAME } from '../config.js'
+import { jsPDF } from 'jspdf';
+
 //borrar//
-import path from "path";
 import fs from "fs/promises";
 import { fileURLToPath } from 'url';
+import path from "path";
 
 export const consultarPersonas = async (req, res) => {
 
@@ -70,19 +71,14 @@ export const generarReportePDF = async (req, res) => {
         console.log(e);
         return res.status(500).json({ message: `Error del servidor, ${e}` });
     }
-};*/
-
-
+}
+*/
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const baseDir = path.resolve(__dirname, '..');
 
 export const generarReportePDF = async (req, res) => {
     try {
         console.log("Generando PDF...");
-
-        // Cargar el logotipo desde el servidor
-        const logoData = await fs.readFile('../../OIG.jpg'); // Ruta al logotipo
-        const logoImage = new Image(logoData);
-        const logoWidth = 40; // Ancho del logotipo
-        const logoHeight = 40; // Alto del logotipo
 
         const sql = 'SELECT * FROM personasid';
         const rtaSql = await pool.query(sql, []);
@@ -92,8 +88,16 @@ export const generarReportePDF = async (req, res) => {
             const pdf = new jsPDF();
             let y = 10;
 
-            // Agregar el logotipo al PDF
-            pdf.addImage(logoImage, 10, 10, logoWidth, logoHeight);
+            // Ruta de la imagen JPEG
+            const imagePath = path.join(baseDir, './data', 'imag.jpeg');
+
+            // Leer la imagen como un Buffer
+            const imageBuffer = await fs.readFile(imagePath);
+
+            // Agregar imagen al PDF
+            pdf.addImage(imageBuffer, 'JPEG', 10, y, 50, 50); // ajusta las coordenadas y dimensiones según tu diseño
+
+            y += 70; // Ajusta la posición en Y después de la imagen
 
             pdf.text("REPORTE PERSONAS CREADOS", 10, y);
             y += 30;
@@ -107,18 +111,18 @@ export const generarReportePDF = async (req, res) => {
             const pdfFileName = 'REPORTEPERSONAS.pdf';
 
             // Ruta completa al archivo PDF en la carpeta "public"
-            const __filename = fileURLToPath(import.meta.url);
-            const __dirname = path.dirname(__filename);
-            const pdfFilePath = path.join(__dirname, '../public', pdfFileName);
+            const pdfFilePath = path.join(baseDir, './public', pdfFileName);
+            console.log("Ruta completa del archivo PDF:", pdfFilePath);
 
-            // Guarda el PDF en la carpeta "public"
+
+            // Guardar el PDF en la carpeta "public"
             pdf.save(pdfFilePath);
 
-            // Configura el tipo de contenido como PDF
+            // Configurar el tipo de contenido como PDF
             res.contentType('application/pdf');
 
-            // Envía el archivo PDF como respuesta
-            res.sendFile(pdfFileName, { root: path.join(__dirname, '..', 'public') });
+            // Enviar el archivo PDF como respuesta
+            res.sendFile(pdfFileName, { root: path.join(baseDir, './public') });
         } else {
             res.status(204).json();
         }
@@ -127,6 +131,7 @@ export const generarReportePDF = async (req, res) => {
         return res.status(500).json({ message: `Error del servidor, ${e}` });
     }
 };
+
 
 
 
